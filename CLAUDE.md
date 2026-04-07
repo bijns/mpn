@@ -30,8 +30,12 @@ This repo contains PowerShell scripts for Microsoft 365 tenant administration us
 # Compare two users' licenses and copy from one to the other
 .\Compare-M365UserLicenses.ps1
 
+# Find users with one license but not another (non-blocked only)
+.\Get-M365UsersWithoutLicense.ps1
+
 # Dry run
 .\Compare-M365UserLicenses.ps1 -WhatIf
+.\Get-M365UsersWithoutLicense.ps1 -WhatIf
 
 # Rollback a copy operation
 .\Compare-M365UserLicenses.ps1 -Rollback .\rollback_copy_<timestamp>.json
@@ -41,6 +45,7 @@ This repo contains PowerShell scripts for Microsoft 365 tenant administration us
 
 - **Assign-M365License.ps1**: Single self-contained script. Uses `Get-MgSubscribedSku` for license inventory, `Get-MgUser` with OData filter for user lookups, and `Set-MgUserLicense` for assignments/removals. Every mutating operation saves a JSON rollback file automatically.
 - **Compare-M365UserLicenses.ps1**: Filter users by license, pick two to compare side-by-side, then copy all missing licenses from one to the other. Saves a rollback file for reversibility.
+- **Get-M365UsersWithoutLicense.ps1**: Read-only report script. Pick a "must have" and "must NOT have" license, lists all enabled (non-blocked) users matching those criteria. Optional CSV export.
 - **rollback_*.json**: Auto-generated rollback files containing affected user IDs, SKU info, and action type (`remove`, assign, or `copy`). Used by the `-Rollback` parameter to reverse operations.
 
 Each script is self-contained with its own copies of `Show-Menu` and `Confirm-Prompt` helpers (no shared module). Graph API pattern: `Get-MgSubscribedSku` for license inventory, `Get-MgUser -Filter "assignedLicenses/any(...)"` with `-ConsistencyLevel eventual` for user lookups, `Set-MgUserLicense` for mutations.

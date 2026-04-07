@@ -26,6 +26,14 @@ Select a license and remove it from all users who have it assigned:
 .\Assign-M365License.ps1 -Remove
 ```
 
+### Find users with one license but not another
+
+Pick a "must have" and a "must NOT have" license, then list all enabled (non-blocked) users that match. Optionally export to CSV:
+
+```powershell
+.\Get-M365UsersWithoutLicense.ps1
+```
+
 ### Dry run
 
 Preview what would happen without making any changes:
@@ -34,6 +42,7 @@ Preview what would happen without making any changes:
 .\Assign-M365License.ps1 -WhatIf
 .\Assign-M365License.ps1 -Remove -WhatIf
 .\Compare-M365UserLicenses.ps1 -WhatIf
+.\Get-M365UsersWithoutLicense.ps1 -WhatIf
 ```
 
 ### Rollback
@@ -79,3 +88,12 @@ Filter users by license, pick two to compare side-by-side, then copy all missing
 5. Choose copy direction (which user's licenses to copy to the other)
 6. Confirm and execute
 7. Rollback file saved automatically
+
+### Get-M365UsersWithoutLicense.ps1
+
+1. Connect to Microsoft Graph (read-only scopes)
+2. Select the license users must have
+3. Select the license users must NOT have
+4. Fetch and filter: excludes blocked users and users who have the excluded license
+5. Display matching users with summary counts
+6. Optionally export results to CSV
